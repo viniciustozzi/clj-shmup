@@ -6,7 +6,7 @@
 (defn -main []
   (q/defsketch my-game
     :host "my-gamek"
-    :size [800 600]
+    :size [dyn/screen-width dyn/screen-height]
     :setup dyn/setup
     :draw dyn/on-draw
     :update dyn/on-update

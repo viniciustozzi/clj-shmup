@@ -5,13 +5,16 @@
             [my-quill-sketch.utils :as utils]))
 
 (defonce speed 3)
+(defonce screen-width 600)
+(defonce screen-height 600)
 
 (defn setup
   "Initial setup of the game, called once in the begining.
   Returns the initial state of the game"
   []
   (q/text-font (q/create-font "Arial" 24 true))
-  {:x 0 :y 0
+  {:x 30 :y 30
+   :w 100 :h 100
    :dirx 0 :diry 0
    :image (q/load-image "mage.png")
    :input []})
@@ -25,7 +28,8 @@
       :left (assoc state :input (utils/conj-once input key))
       :right (assoc state :input (utils/conj-once input key))
       :up (assoc state :input (utils/conj-once input key))
-      :down (assoc state :input (utils/conj-once input key)))))
+      :down (assoc state :input (utils/conj-once input key))
+      state)))
 
 (defn on-key-released [{:keys [input] :as state} event]
   "Called when any key is released.
@@ -35,7 +39,8 @@
       :left (assoc state :input (vec (remove #(= % key) input)))
       :right (assoc state :input (vec (remove #(= % key) input)))
       :up (assoc state :input (vec (remove #(= % key) input)))
-      :down (assoc state :input (vec (remove #(= % key) input))))))
+      :down (assoc state :input (vec (remove #(= % key) input)))
+      state)))
 
 (defn update-dir-x [{:keys [input] :as state}]
   (cond
@@ -57,10 +62,22 @@
       (update-dir-x)
       (update-dir-y)))
 
-(defn update-pos [{:keys [x y dirx diry] :as state}]
+(defn check-borders [x y w h dirx diry]
+  (let [new-x (+ x (* speed dirx))
+        new-y (+ y (* speed diry))]
+    (and (> new-x 0)
+         (< (+ w new-x) screen-width)
+         (> new-y 0)
+         (< new-y (+ h new-y) screen-height))))
+
+(defn update-pos [{:keys [x y w h dirx diry] :as state}]
   (-> state
-      (assoc-in [:x] (+ x (* speed dirx)))
-      (assoc-in [:y] (+ y (* speed diry)))))
+      (assoc-in [:x] (if (check-borders x y w h dirx diry)
+                       (+ x (* speed dirx))
+                       x))
+      (assoc-in [:y] (if (check-borders x y w h dirx diry)
+                       (+ y (* speed diry))
+                       y))))
 
 (defn on-update
   "Called every frame, receives global state as argument
@@ -76,8 +93,10 @@
   (q/background 0)
   (let [im (:image state)]
     (when (q/loaded? im)
-      (q/image im (:x state) (:y state) 130 120)
-      (q/text (pr-str (:input state)) 100 100)
+      (q/image im (:x state) (:y state) (:w state) (:w state))
+      ;(q/rect 10 10 10 10)
+      (q/text (pr-str (:x state)) 100 100)
+      (q/text (pr-str (q/screen-width)) 100 120)
       (q/fill 255))))
 
 (comment
