@@ -5,19 +5,31 @@
             [my-quill-sketch.utils :as utils]))
 
 (defonce speed 3)
-(defonce screen-width 600)
-(defonce screen-height 600)
+(defonce screen-width 350)
+(defonce screen-height 500)
+
+(defn make-enemy [x y]
+  {:x x
+   :y y
+   :size 32})
+
+(defn initial-state []
+  {:x 30 :y 30
+   :w 32 :h 32
+   :dirx 0 :diry 0
+   :assets {:player (q/load-image "ship.png")
+            :enemy (q/load-image "enemy.png")}
+   :enemies (vec (map
+                  #(make-enemy (* 50 %) 10)
+                  (range 1 7)))
+   :input []})
 
 (defn setup
   "Initial setup of the game, called once in the begining.
   Returns the initial state of the game"
   []
   (q/text-font (q/create-font "Arial" 24 true))
-  {:x 30 :y 30
-   :w 100 :h 100
-   :dirx 0 :diry 0
-   :image (q/load-image "mage.png")
-   :input []})
+  (initial-state))
 
 (defn on-key-pressed
   "Called when any key is pressed.
@@ -87,17 +99,21 @@
       (proccess-inputs)
       (update-pos)))
 
+(defn settings []
+  (q/smooth 0))
+
 (defn on-draw
   "Receives global state of the game and draws it to the screen"
   [state]
   (q/background 0)
-  (let [im (:image state)]
-    (when (q/loaded? im)
-      (q/image im (:x state) (:y state) (:w state) (:w state))
-      ;(q/rect 10 10 10 10)
-      (q/text (pr-str (:x state)) 100 100)
-      (q/text (pr-str (q/screen-width)) 100 120)
-      (q/fill 255))))
+  (q/fill 255)
+  (q/stroke 255)
+  (let [player (-> state :assets :player)
+        enemy (-> state :assets :enemy)]
+    (when (and (q/loaded? player) (q/loaded? enemy))
+      (q/image player (:x state) (:y state) (:w state) (:w state))
+      (doseq [e (:enemies state)]
+        (q/image enemy (:x e) (:y e) (:size e) (:size e))))))
 
 (comment
   (use 'my-quill-sketch.dynamic :reload)

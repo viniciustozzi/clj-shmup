@@ -5,14 +5,15 @@
 
 (defn -main []
   (q/defsketch my-game
-    :host "my-gamek"
+    :host "my-game"
     :size [dyn/screen-width dyn/screen-height]
     :setup dyn/setup
     :draw dyn/on-draw
     :update dyn/on-update
     :key-pressed dyn/on-key-pressed
     :key-released dyn/on-key-released
-    :features [:keep-on-top]
+    :settings dyn/settings
+    :features [:keep-on-top :resizable]
     :middleware [m/fun-mode]))
 
 (-main)
