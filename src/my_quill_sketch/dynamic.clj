@@ -4,21 +4,22 @@
             [quil.applet :as qa]
             [my-quill-sketch.utils :as utils]))
 
-(defonce speed 3)
-(defonce screen-width 350)
-(defonce screen-height 500)
+(def speed 3)
+(def enemy-speed 3)
+(def screen-width 350)
+(def screen-height 500)
+
+(def assets (atom nil))
 
 (defn make-enemy [x y]
   {:x x
    :y y
    :size 32})
 
-(defn initial-state []
-  {:x 30 :y 30
+(defn initial-state [scr-w scr-h]
+  {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
    :w 32 :h 32
    :dirx 0 :diry 0
-   :assets {:player (q/load-image "ship.png")
-            :enemy (q/load-image "enemy.png")}
    :enemies (vec (map
                   #(make-enemy (* 50 %) 10)
                   (range 1 7)))
@@ -29,7 +30,9 @@
   Returns the initial state of the game"
   []
   (q/text-font (q/create-font "Arial" 24 true))
-  (initial-state))
+  (reset! assets {:player (q/load-image "ship.png")
+                  :enemy (q/load-image "enemy.png")})
+  (initial-state screen-width screen-height))
 
 (defn on-key-pressed
   "Called when any key is pressed.
@@ -74,30 +77,34 @@
       (update-dir-x)
       (update-dir-y)))
 
-(defn check-borders [x y w h dirx diry]
+(defn check-borders [x y w h dirx diry scr-w scr-h]
   (let [new-x (+ x (* speed dirx))
         new-y (+ y (* speed diry))]
     (and (> new-x 0)
-         (< (+ w new-x) screen-width)
+         (< (+ w new-x) scr-w)
          (> new-y 0)
-         (< new-y (+ h new-y) screen-height))))
+         (< new-y (+ h new-y) scr-h))))
 
 (defn update-pos [{:keys [x y w h dirx diry] :as state}]
   (-> state
-      (assoc-in [:x] (if (check-borders x y w h dirx diry)
+      (assoc-in [:x] (if (check-borders x y w h dirx diry screen-width screen-height)
                        (+ x (* speed dirx))
                        x))
-      (assoc-in [:y] (if (check-borders x y w h dirx diry)
+      (assoc-in [:y] (if (check-borders x y w h dirx diry screen-height screen-height)
                        (+ y (* speed diry))
                        y))))
+
+(defn update-enemies [{:keys [enemies] :as state}]
+  (map #(assoc % :y (+ 2 (:y %))) enemies))
 
 (defn on-update
   "Called every frame, receives global state as argument
   Returns a new updated state at the end of the frame"
   [state]
   (-> state
-      (proccess-inputs)
-      (update-pos)))
+     ; (proccess-inputs)
+     ; (update-pos)
+      (update-enemies)))
 
 (defn settings []
   (q/smooth 0))
@@ -108,15 +115,19 @@
   (q/background 0)
   (q/fill 255)
   (q/stroke 255)
-  (let [player (-> state :assets :player)
-        enemy (-> state :assets :enemy)]
+  (let [player (:player @assets)
+        enemy (:enemy @assets)]
     (when (and (q/loaded? player) (q/loaded? enemy))
       (q/image player (:x state) (:y state) (:w state) (:w state))
-      (doseq [e (:enemies state)]
-        (q/image enemy (:x e) (:y e) (:size e) (:size e))))))
+
+     ; (doseq [e (:enemies state)]
+     ;   (q/image enemy (:x e) (:y e) (:size e) (:size e)))
+      )))
 
 (comment
   (use 'my-quill-sketch.dynamic :reload)
+  (qa/with-applet my-quill-sketch.core/my-game
+    (q/state))
+
   (qa/with-applet my-quill-sketch.core/my-game (q/no-loop))
-  (qa/with-applet my-quill-sketch.core/my-game (q/start-loop))
-  (qa/with-applet my-quill-sketch.core/my-game (q/random 10)))
+  (qa/with-applet my-quill-sketch.core/my-game (q/start-loop)))
