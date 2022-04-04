@@ -1,11 +1,10 @@
 (ns my-quill-sketch.dynamic
   (:require [quil.core :as q]
-            [quil.middleware :as m]
             [quil.applet :as qa]
             [my-quill-sketch.utils :as utils]))
 
 (def speed 3)
-(def enemy-speed 3)
+(def enemy-speed 1)
 (def screen-width 350)
 (def screen-height 500)
 
@@ -94,17 +93,17 @@
                        (+ y (* speed diry))
                        y))))
 
-(defn update-enemies [{:keys [enemies] :as state}]
-  (map #(assoc % :y (+ 2 (:y %))) enemies))
+(defn update-enemies [{:keys [enemies] :as state} speed]
+  (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
 
 (defn on-update
   "Called every frame, receives global state as argument
   Returns a new updated state at the end of the frame"
   [state]
   (-> state
-     ; (proccess-inputs)
-     ; (update-pos)
-      (update-enemies)))
+      (proccess-inputs)
+      (update-pos)
+      (update-enemies enemy-speed)))
 
 (defn settings []
   (q/smooth 0))
@@ -120,9 +119,8 @@
     (when (and (q/loaded? player) (q/loaded? enemy))
       (q/image player (:x state) (:y state) (:w state) (:w state))
 
-     ; (doseq [e (:enemies state)]
-     ;   (q/image enemy (:x e) (:y e) (:size e) (:size e)))
-      )))
+      (doseq [e (:enemies state)]
+        (q/image enemy (:x e) (:y e) (:size e) (:size e))))))
 
 (comment
   (use 'my-quill-sketch.dynamic :reload)

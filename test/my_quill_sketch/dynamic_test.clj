@@ -27,11 +27,11 @@
       (is (= (count (:enemies s)) 6)))))
 
 (deftest update-enemies-position
-  (testing "Increase y position of each enemy"
+  (testing "Increase y position of each enemy based on the enemy speed"
     (is (= (dyn/update-enemies {:enemies [{:x 10 :y 10 :size 32}
-                                          {:x 30 :y 10 :size 32}]})
-           [{:x 10 :y 12 :size 32}
-            {:x 30 :y 12 :size 32}]))))
+                                          {:x 30 :y 10 :size 32}]} 2)
+           {:enemies [{:x 10 :y 12 :size 32}
+                      {:x 30 :y 12 :size 32}]}))))
 
 (deftest check-borders
   (testing "Player on (10, 10) moving right and down"
