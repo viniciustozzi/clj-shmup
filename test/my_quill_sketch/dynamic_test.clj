@@ -1,5 +1,6 @@
 (ns my-quill-sketch.dynamic-test
   (:require [my-quill-sketch.dynamic :as dyn]
+            [my-quill-sketch.player :as p]
             [clojure.test :refer [deftest testing is]]))
 
 (deftest make-enemy
@@ -28,17 +29,17 @@
 
 (deftest update-enemies-position
   (testing "Increase y position of each enemy based on the enemy speed"
-    (is (= (dyn/move-enemies {:enemies [{:x 10 :y 10 :size 32}
-                                        {:x 30 :y 10 :size 32}]} 2)
-           {:enemies [{:x 10 :y 12 :size 32}
-                      {:x 30 :y 12 :size 32}]}))))
+    (is (= {:enemies [{:x 10 :y 10 :size 32}
+                      {:x 30 :y 10 :size 32}]}
+           (dyn/move-enemies {:enemies [{:x 10 :y 10 :size 32}
+                                        {:x 30 :y 10 :size 32}]} 2)))))
 
 (deftest check-borders
   (testing "Player on (10, 10) moving right and down"
-    (is (true? (dyn/check-borders 10 10 30 30 1 1 350 500)))))
+    (is (true? (p/check-borders 10 10 30 30 1 1 350 500 3)))))
 
 (deftest make-shot
-  (is (= (dyn/make-shot 50 40)
+  (is (= (p/make-shot 50 40)
          {:x 50 :y 40 :size 16})))
 
 (deftest player-shot
@@ -46,10 +47,10 @@
           :shots [{:x 30 :y 30 :size 16}]
           :last-shot-time 30.5
           :input [:x :up]}
-         (dyn/player-shot {:x 30 :y 30
-                           :input [:x :up]
-                           :shots []
-                           :last-shot-time 0} 30.5))))
+         (p/player-shot {:x 30 :y 30
+                         :input [:x :up]
+                         :shots []
+                         :last-shot-time 0} 0.5 30.5))))
 
 (deftest update-shots
   (is (= {:x 30 :y 30
@@ -61,6 +62,6 @@
 
 (deftest can-shoot?
   (testing "Player shooting when not in cooldown"
-    (is (true? (dyn/can-shoot? {:last-shot-time 10.0} 2 12.5))))
+    (is (true? (p/can-shoot? {:last-shot-time 10.0} 2 12.5))))
   (testing "Player shooting when in cooldown"
-    (is (false? (dyn/can-shoot? {:last-shot-time 10.0} 2 5.0)))))
+    (is (false? (p/can-shoot? {:last-shot-time 10.0} 2 5.0)))))
