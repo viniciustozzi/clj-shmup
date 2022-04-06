@@ -10,6 +10,7 @@
     :setup dyn/setup
     :draw dyn/on-draw
     :update dyn/on-update
+    :settings dyn/settings
     :key-pressed dyn/on-key-pressed
     :key-released dyn/on-key-released
     :features [:keep-on-top :resizable]
