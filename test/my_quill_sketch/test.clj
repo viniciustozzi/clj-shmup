@@ -1,11 +1,12 @@
-(ns my-quill-sketch.dynamic-test
+(ns my-quill-sketch.test
   (:require [my-quill-sketch.dynamic :as dyn]
             [my-quill-sketch.player :as p]
+            [my-quill-sketch.enemies :as e]
             [clojure.test :refer [deftest testing is]]))
 
 (deftest make-enemy
-  (let [e1 (dyn/make-enemy 50 50)
-        e2 (dyn/make-enemy -10 20)]
+  (let [e1 (e/make-enemy 50 50)
+        e2 (e/make-enemy -10 20)]
     (testing "Create basic enemy"
       (is e1 {:x 50 :y 50 :size 32}))
     (testing "Check if enemy has correct size"
@@ -29,10 +30,10 @@
 
 (deftest update-enemies-position
   (testing "Increase y position of each enemy based on the enemy speed"
-    (is (= {:enemies [{:x 10 :y 10 :size 32}
-                      {:x 30 :y 10 :size 32}]}
-           (dyn/move-enemies {:enemies [{:x 10 :y 10 :size 32}
-                                        {:x 30 :y 10 :size 32}]} 2)))))
+    (is (= {:enemies [{:x 10 :y 12 :size 32}
+                      {:x 30 :y 12 :size 32}]}
+           (e/move-enemies {:enemies [{:x 10 :y 10 :size 32}
+                                      {:x 30 :y 10 :size 32}]} 2)))))
 
 (deftest check-borders
   (testing "Player on (10, 10) moving right and down"
@@ -55,10 +56,10 @@
 (deftest update-shots
   (is (= {:x 30 :y 30
           :shots [{:x 30 :y 28 :size 16}]}
-         (dyn/move-shots {:x 30 :y 30
-                          :shots [{:x 30
-                                   :y 30
-                                   :size 16}]} 2))))
+         (p/move-shots {:x 30 :y 30
+                        :shots [{:x 30
+                                 :y 30
+                                 :size 16}]} 2))))
 
 (deftest can-shoot?
   (testing "Player shooting when not in cooldown"

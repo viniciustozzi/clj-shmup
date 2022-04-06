@@ -57,3 +57,6 @@
         (assoc :shots (conj shots (make-shot x y)))
         (assoc :last-shot-time current-time))
     state))
+
+(defn move-shots [{:keys [shots] :as state} speed]
+  (assoc state :shots (map #(assoc % :y (- (:y %) speed)) shots)))

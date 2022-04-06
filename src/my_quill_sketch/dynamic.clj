@@ -2,7 +2,8 @@
   (:require [quil.core :as q]
             [quil.applet :as qa]
             [my-quill-sketch.utils :as utils]
-            [my-quill-sketch.player :as p]))
+            [my-quill-sketch.player :as p]
+            [my-quill-sketch.enemies :as e]))
 
 (def player-speed 3)
 (def shot-cooldown 500) ;;in ms
@@ -13,11 +14,6 @@
 
 (def assets (atom nil))
 
-(defn make-enemy [x y]
-  {:x x
-   :y y
-   :size 32})
-
 (defn initial-state [scr-w scr-h]
   {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
    :w 32 :h 32
@@ -25,7 +21,7 @@
    :shots []
    :last-shot-time 0
    :enemies (vec (map
-                  #(make-enemy (* 50 %) 10)
+                  #(e/make-enemy (* 50 %) 10)
                   (range 1 7)))
    :input []})
 
@@ -59,12 +55,6 @@
   (let [key (:key event)]
     (assoc state :input (vec (remove #(= % key) input)))))
 
-(defn move-shots [{:keys [shots] :as state} speed]
-  (assoc state :shots (map #(assoc % :y (- (:y %) speed)) shots)))
-
-(defn move-enemies [{:keys [enemies] :as state} speed]
-  (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
-
 (defn proccess-inputs
   "Process every keyword in :input from 'state'
   and update 'state' accordingly"
@@ -81,8 +71,8 @@
   (-> state
       (proccess-inputs)
       (p/update-player-pos player-speed screen-width screen-height)
-      (move-shots shot-speed)
-      (move-enemies enemy-speed)))
+      (p/move-shots shot-speed)
+      (e/move-enemies enemy-speed)))
 
 (defn settings []
   (q/smooth 0))
