@@ -12,7 +12,6 @@
     :update dyn/on-update
     :key-pressed dyn/on-key-pressed
     :key-released dyn/on-key-released
-    :settings dyn/settings
     :features [:keep-on-top :resizable]
     :middleware [m/fun-mode]))
 

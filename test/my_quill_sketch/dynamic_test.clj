@@ -43,12 +43,24 @@
 
 (deftest player-shot
   (is (= {:x 30 :y 30
-          :shots [{:x 30 :y 30 :size 16}]}
+          :shots [{:x 30 :y 30 :size 16}]
+          :last-shot-time 30.5
+          :input [:x :up]}
          (dyn/player-shot {:x 30 :y 30
-                           :shots []}))))
+                           :input [:x :up]
+                           :shots []
+                           :last-shot-time 0} 30.5))))
 
 (deftest update-shots
   (is (= {:x 30 :y 30
           :shots [{:x 30 :y 28 :size 16}]}
          (dyn/move-shots {:x 30 :y 30
-                          :shots [{:x 30 :y 30 :size 16}]} 2))))
+                          :shots [{:x 30
+                                   :y 30
+                                   :size 16}]} 2))))
+
+(deftest can-shoot?
+  (testing "Player shooting when not in cooldown"
+    (is (true? (dyn/can-shoot? {:last-shot-time 10.0} 2 12.5))))
+  (testing "Player shooting when in cooldown"
+    (is (false? (dyn/can-shoot? {:last-shot-time 10.0} 2 5.0)))))

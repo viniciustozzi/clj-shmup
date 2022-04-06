@@ -4,7 +4,8 @@
             [my-quill-sketch.utils :as utils]))
 
 (def player-speed 3)
-(def shot-speed 2)
+(def shot-cooldown 500) ;;in ms
+(def shot-speed 3)
 (def enemy-speed 1)
 (def screen-width 350)
 (def screen-height 500)
@@ -26,6 +27,7 @@
    :w 32 :h 32
    :dirx 0 :diry 0
    :shots []
+   :last-shot-time 0
    :enemies (vec (map
                   #(make-enemy (* 50 %) 10)
                   (range 1 7)))
@@ -73,22 +75,23 @@
     (utils/btn-pressed? :down input) (assoc state :diry 1)
     :else (assoc state :diry 0)))
 
-(defn player-shot [{:keys [input x y shots] :as state}]
-  (if (utils/btn-pressed? :x input)
-    (assoc state :shots (conj shots (make-shot x y)))
+(defn can-shoot? [{:keys [last-shot-time]}
+                  cooldown-time
+                  current-time]
+  (< cooldown-time (- current-time last-shot-time)))
+
+(defn player-shot [{:keys [input x y shots] :as state}
+                   cooldown-time
+                   current-time]
+  (if (and (utils/btn-pressed? :x input)
+           (can-shoot? state cooldown-time current-time))
+    (-> state
+        (assoc :shots (conj shots (make-shot x y)))
+        (assoc :last-shot-time current-time))
     state))
 
-(defn move-shots [{:keys [x y shots] :as state} speed]
+(defn move-shots [{:keys [shots] :as state} speed]
   (assoc state :shots (map #(assoc % :y (- (:y %) speed)) shots)))
-
-(defn proccess-inputs
-  "Process every keyword in :input from 'state'
-  and update 'state' accordingly"
-  [state]
-  (-> state
-      (update-dir-x)
-      (update-dir-y)
-      (player-shot)))
 
 (defn check-borders [x y w h dirx diry scr-w scr-h]
   (let [new-x (+ x (* player-speed dirx))
@@ -109,6 +112,15 @@
 
 (defn move-enemies [{:keys [enemies] :as state} speed]
   (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
+
+(defn proccess-inputs
+  "Process every keyword in :input from 'state'
+  and update 'state' accordingly"
+  [state]
+  (-> state
+      (update-dir-x)
+      (update-dir-y)
+      (player-shot shot-cooldown (q/millis))))
 
 (defn on-update
   "Called every frame, receives global state as argument
@@ -131,7 +143,8 @@
   (q/stroke 255)
   (when (assets-loaded?)
     (q/image (:player @assets) (:x state) (:y state) (:w state) (:w state))
-    (q/text (pr-str (:input state)) 40 40)
+    (q/text (pr-str (:last-shot-time state)) 40 40)
+    (q/text (pr-str (q/millis)) 40 60)
     (doseq [e (:enemies state)]
       (q/image (:enemy @assets) (:x e) (:y e) (:size e) (:size e)))
     (doseq [s (:shots state)]
