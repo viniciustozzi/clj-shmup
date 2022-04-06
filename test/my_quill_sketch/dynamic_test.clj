@@ -28,11 +28,27 @@
 
 (deftest update-enemies-position
   (testing "Increase y position of each enemy based on the enemy speed"
-    (is (= (dyn/update-enemies {:enemies [{:x 10 :y 10 :size 32}
-                                          {:x 30 :y 10 :size 32}]} 2)
+    (is (= (dyn/move-enemies {:enemies [{:x 10 :y 10 :size 32}
+                                        {:x 30 :y 10 :size 32}]} 2)
            {:enemies [{:x 10 :y 12 :size 32}
                       {:x 30 :y 12 :size 32}]}))))
 
 (deftest check-borders
   (testing "Player on (10, 10) moving right and down"
     (is (true? (dyn/check-borders 10 10 30 30 1 1 350 500)))))
+
+(deftest make-shot
+  (is (= (dyn/make-shot 50 40)
+         {:x 50 :y 40 :size 16})))
+
+(deftest player-shot
+  (is (= {:x 30 :y 30
+          :shots [{:x 30 :y 30 :size 16}]}
+         (dyn/player-shot {:x 30 :y 30
+                           :shots []}))))
+
+(deftest update-shots
+  (is (= {:x 30 :y 30
+          :shots [{:x 30 :y 28 :size 16}]}
+         (dyn/move-shots {:x 30 :y 30
+                          :shots [{:x 30 :y 30 :size 16}]} 2))))
