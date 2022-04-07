@@ -2,6 +2,7 @@
   (:require [my-quill-sketch.dynamic :as dyn]
             [my-quill-sketch.player :as p]
             [my-quill-sketch.enemies :as e]
+            [my-quill-sketch.utils :as utils]
             [clojure.test :refer [deftest testing is]]))
 
 (deftest make-enemy
@@ -66,3 +67,11 @@
     (is (true? (p/can-shoot? {:last-shot-time 10.0} 2 12.5))))
   (testing "Player shooting when in cooldown"
     (is (false? (p/can-shoot? {:last-shot-time 10.0} 2 5.0)))))
+
+(deftest collides?
+  (testing "Circles that collide"
+    (is (true? (utils/colllides? {:center [20 20] :radius 5}
+                                 {:center [15 20] :radius 10}))))
+  (testing "Circles that do not collide"
+    (is (false? (utils/colllides? {:center [20 20] :radius 5}
+                                  {:center [35 30] :radius 5})))))

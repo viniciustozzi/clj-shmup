@@ -1,4 +1,5 @@
-(ns my-quill-sketch.utils)
+(ns my-quill-sketch.utils
+  (:require [clojure.math :as math]))
 
 (defn btn-pressed?
   "Checks if a button is being pressed, receives a keyword button
@@ -17,3 +18,21 @@
   (if (not (some #{val} coll))
     (conj coll val)
     coll))
+
+(def c1 {:center [20 20] :radius 5})
+(def c2 {:center [10 20] :radius 15})
+
+(defn colllides?
+  "Checks if two circles collides with each other
+  Expects a circle map such as {:center [20 20] :radius 5}
+  Center being a vector of x and y"
+  [c1 c2]
+  (let [r1 (:radius c1)
+        r2 (:radius c2)
+        c1-x (get (:center c1) 0)
+        c1-y (get (:center c1) 1)
+        c2-x (get (:center c2) 0)
+        c2-y (get (:center c2) 1)
+        dist (math/sqrt (+ (math/pow (- c2-x c1-x) 2.0)
+                           (math/pow (- c2-y c1-y) 2.0)))]
+    (< dist (+ r1 r2))))
