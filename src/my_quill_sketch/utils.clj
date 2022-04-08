@@ -19,10 +19,11 @@
     (conj coll val)
     coll))
 
-(def c1 {:center [20 20] :radius 5})
-(def c2 {:center [10 20] :radius 15})
+(defn make-circle [x y radius]
+  {:center [x y]
+   :radius radius})
 
-(defn colllides?
+(defn collides?
   "Checks if two circles collides with each other
   Expects a circle map such as {:center [20 20] :radius 5}
   Center being a vector of x and y"

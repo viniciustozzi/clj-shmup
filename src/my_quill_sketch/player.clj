@@ -4,7 +4,8 @@
 (defn make-shot [x y]
   {:x x
    :y y
-   :size 16})
+   :size 16
+   :hitbox 16})
 
 (defn update-dir-x [{:keys [input] :as state}]
   (cond

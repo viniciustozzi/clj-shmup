@@ -9,12 +9,17 @@
   (let [e1 (e/make-enemy 50 50)
         e2 (e/make-enemy -10 20)]
     (testing "Create basic enemy"
-      (is e1 {:x 50 :y 50 :size 32}))
+      (is {:x 50 :y 50 :size 32 :hitbox 32} e1))
     (testing "Check if enemy has correct size"
-      (is (:size e1) 32))
+      (is 32 (:size e1)))
     (testing "Check negative initial x position"
-      (is (= (:x e2) -10)
-          (= (:y e2) -20)))))
+      (is (= -10 (:x e2))
+          (= -10 (:y e2))))))
+
+(deftest make-circle
+  (is (= {:center [10 20]
+          :radius 30}
+         (utils/make-circle 10 20 30))))
 
 (deftest check-initial-state
   (let [s (dyn/initial-state 300 300)]
@@ -41,12 +46,12 @@
     (is (true? (p/check-borders 10 10 30 30 1 1 350 500 3)))))
 
 (deftest make-shot
-  (is (= (p/make-shot 50 40)
-         {:x 50 :y 40 :size 16})))
+  (is (= {:x 50 :y 40 :size 16 :hitbox 16}
+         (p/make-shot 50 40))))
 
 (deftest player-shot
   (is (= {:x 30 :y 30
-          :shots [{:x 30 :y 30 :size 16}]
+          :shots [{:x 30 :y 30 :size 16 :hitbox 16}]
           :last-shot-time 30.5
           :input [:x :up]}
          (p/player-shot {:x 30 :y 30
@@ -70,8 +75,24 @@
 
 (deftest collides?
   (testing "Circles that collide"
-    (is (true? (utils/colllides? {:center [20 20] :radius 5}
-                                 {:center [15 20] :radius 10}))))
+    (is (true? (utils/collides? {:center [20 20] :radius 5}
+                                {:center [15 20] :radius 10}))))
   (testing "Circles that do not collide"
-    (is (false? (utils/colllides? {:center [20 20] :radius 5}
-                                  {:center [35 30] :radius 5})))))
+    (is (false? (utils/collides? {:center [20 20] :radius 5}
+                                 {:center [35 30] :radius 5})))))
+
+(deftest enemy-collides-with-shot?
+  (testing "Enemy collides with some shot"
+    (is (seq? (e/collides-with-shot? [{:x 50 :y 40 :size 16 :hitbox 16}
+                                      {:x 40 :y 40 :size 16 :hitbox 16}]
+                                     {:x 40
+                                      :y 40
+                                      :size 32
+                                      :hitbox 32}))))
+  (testing "Enemy does not collide with any shot"
+    (is (nil? (e/collides-with-shot? [{:x 50 :y 50 :size 16 :hitbox 16}
+                                      {:x 40 :y 40 :size 16 :hitbox 16}]
+                                     {:x 300
+                                      :y 200
+                                      :size 32
+                                      :hitbox 32})))))
