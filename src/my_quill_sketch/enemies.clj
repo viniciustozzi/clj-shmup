@@ -18,7 +18,8 @@
                    (utils/collides? c1 c2))) shots)))
 
 (defn check-enemies-collisions [{:keys [enemies shots] :as state}]
-  (filter (fn [e] (collides-with-shot? shots e)) enemies))
+  (assoc state :enemies (let [e-hit (keep (fn [e] (collides-with-shot? shots e)) enemies)]
+                            e-hit)))
 
 (check-enemies-collisions {:enemies [(make-enemy 20 20)
                                      (make-enemy 200 300)]
