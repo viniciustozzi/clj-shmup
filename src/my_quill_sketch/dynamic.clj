@@ -73,7 +73,7 @@
       (p/update-player-pos player-speed screen-width screen-height)
       (p/move-shots shot-speed)
       (e/move-enemies enemy-speed)
-      (e/check-enemies-collisions)))
+      (e/check-collision-enemies->shot)))
 
 (defn settings []
   (q/smooth 0))

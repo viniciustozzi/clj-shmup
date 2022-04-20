@@ -11,17 +11,17 @@
 (defn move-enemies [{:keys [enemies] :as state} speed]
   (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
 
-(defn collides-with-shot? [shots e]
-  (seq (filter (fn [s]
-                 (let [c1 (utils/make-circle (:x e) (:y e) (:hitbox e))
-                       c2 (utils/make-circle (:x s) (:y s) (:hitbox s))]
-                   (utils/collides? c1 c2))) shots)))
+(defn enemy-shot-collision [enemy shot]
+  (when (utils/collides? (utils/make-circle (:x shot) (:y shot) (:hitbox shot))
+                         (utils/make-circle (:x enemy) (:y enemy) (:hitbox enemy)))
+    (vector enemy shot)))
 
-(defn check-enemies-collisions [{:keys [enemies shots] :as state}]
-  (assoc state :enemies (let [e-hit (keep (fn [e] (collides-with-shot? shots e)) enemies)]
-                            e-hit)))
+(defn enemies-shots-collision [{:keys [shots enemies] :as state}]
+  (for [s shots
+        e enemies]
+    (enemy-shot-collision s e)))
 
-(check-enemies-collisions {:enemies [(make-enemy 20 20)
-                                     (make-enemy 200 300)]
-                           :shots [(p/make-shot 20 20)
-                                   (p/make-shot 50 50)]})
+(defn check-collision-enemies->shot [{:keys [enemies shots] :as state}]
+  (assoc state :enemies (vec (remove #(collides-with-shot? shots %) enemies)))
+      ;(assoc :shots (remove (fn [s] (collides-with-enemy? enemies s) shots)))
+  )
