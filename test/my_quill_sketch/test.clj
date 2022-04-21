@@ -81,36 +81,25 @@
     (is (false? (utils/collides? {:center [20 20] :radius 5}
                                  {:center [35 30] :radius 5})))))
 
-(deftest enemy-collides-with-shot?
-  (testing "Enemy collides with some shot"
-    (is (seq? (e/collides-with-shot? [{:x 50 :y 40 :size 16 :hitbox 16}
-                                      {:x 40 :y 40 :size 16 :hitbox 16}]
-                                     {:x 40
-                                      :y 40
-                                      :size 32
-                                      :hitbox 32}))))
-  (testing "Enemy does not collide with any shot"
-    (is (nil? (e/collides-with-shot? [{:x 50 :y 50 :size 16 :hitbox 16}
-                                      {:x 40 :y 40 :size 16 :hitbox 16}]
-                                     {:x 300
-                                      :y 200
-                                      :size 32
-                                      :hitbox 32})))))
+;; (deftest enemy-collides-with-shot?
+;;   (testing "Enemy collides with some shot"
+;;     (is (seq? (e/collides-with-shot? [{:x 50 :y 40 :size 16 :hitbox 16}
+;;                                       {:x 40 :y 40 :size 16 :hitbox 16}]
+;;                                      {:x 40
+;;                                       :y 40
+;;                                       :size 32
+;;                                       :hitbox 32}))))
+;;   (testing "Enemy does not collide with any shot"
+;;     (is (nil? (e/collides-with-shot? [{:x 50 :y 50 :size 16 :hitbox 16}
+;;                                       {:x 40 :y 40 :size 16 :hitbox 16}]
+;;                                      {:x 300
+;;                                       :y 200
+;;                                       :size 32
+;;                                       :hitbox 32})))))
+;;
 (deftest test-enemy-shot-collision
   (testing "When enemies and shot collides"
     (is (= {:enemies [(e/make-enemy 20 20)]
             :shots [(p/make-shot 40 40)]}
            (e/check-collision-enemies->shot {:enemies [(e/make-enemy 10 10) (e/make-enemy 150 150)]
                                              :shots [(p/make-shot 10 10) (p/make-shot 300 300)]})))))
-
-(def state {:enemies [(e/make-enemy 10 10) (e/make-enemy 150 150)]
-            :shots [(p/make-shot 10 10)]})
-
-(defn enemy-shot-collision [enemy shot]
-  (when (utils/collides? (utils/make-circle (:x shot) (:y shot) (:hitbox shot))
-                         (utils/make-circle (:x enemy) (:y enemy) (:hitbox enemy)))
-    (vector enemy shot)))
-
-(for [shots (:shots state)
-      enemies (:enemies state)]
-  (enemy-shot-collision shots enemies))
