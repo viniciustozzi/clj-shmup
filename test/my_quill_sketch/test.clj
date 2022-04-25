@@ -81,22 +81,6 @@
     (is (false? (utils/collides? {:center [20 20] :radius 5}
                                  {:center [35 30] :radius 5})))))
 
-;; (deftest enemy-collides-with-shot?
-;;   (testing "Enemy collides with some shot"
-;;     (is (seq? (e/collides-with-shot? [{:x 50 :y 40 :size 16 :hitbox 16}
-;;                                       {:x 40 :y 40 :size 16 :hitbox 16}]
-;;                                      {:x 40
-;;                                       :y 40
-;;                                       :size 32
-;;                                       :hitbox 32}))))
-;;   (testing "Enemy does not collide with any shot"
-;;     (is (nil? (e/collides-with-shot? [{:x 50 :y 50 :size 16 :hitbox 16}
-;;                                       {:x 40 :y 40 :size 16 :hitbox 16}]
-;;                                      {:x 300
-;;                                       :y 200
-;;                                       :size 32
-;;                                       :hitbox 32})))))
-;;
 (deftest test-enemy-shot-collision
   (testing "When enemies and shot collides"
     (is (= {:enemies [(e/make-enemy 150 150)]

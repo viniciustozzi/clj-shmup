@@ -17,7 +17,10 @@
 (defn initial-state [scr-w scr-h]
   {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
    :w 32 :h 32
+   :hitbox 8
+   :hit false
    :dirx 0 :diry 0
+   :life 3
    :shots []
    :last-shot-time 0
    :enemies (vec (map
@@ -72,6 +75,7 @@
       (proccess-inputs)
       (p/update-player-pos player-speed screen-width screen-height)
       (p/move-shots shot-speed)
+      (p/player-collision)
       (e/move-enemies enemy-speed)
       (e/check-collision-enemies->shot)))
 
@@ -86,8 +90,7 @@
   (q/stroke 255)
   (when (assets-loaded?)
     (q/image (:player @assets) (:x state) (:y state) (:w state) (:w state))
-    (q/text (pr-str (:last-shot-time state)) 40 40)
-    (q/text (pr-str (q/millis)) 40 60)
+    (q/text (pr-str (:hit state)) 40 40)
     (doseq [e (:enemies state)]
       (q/image (:enemy @assets) (:x e) (:y e) (:size e) (:size e)))
     (doseq [s (:shots state)]

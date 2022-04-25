@@ -25,10 +25,6 @@
                                         e enemies]
                                     (enemy-shot-collision s e))))))
 
-
-;; (def state {:enemies [(make-enemy 10 10) (make-enemy 150 150)]
-;;             :shots [(p/make-shot 10 10) (p/make-shot 300 300)]})
-
 (defn check-collision-enemies->shot [{:keys [enemies shots] :as state}]
   (let [collisions (enemies-shots-collision enemies shots)]
     (-> state

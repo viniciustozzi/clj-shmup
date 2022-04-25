@@ -61,3 +61,10 @@
 
 (defn move-shots [{:keys [shots] :as state} speed]
   (assoc state :shots (map #(assoc % :y (- (:y %) speed)) shots)))
+
+(defn player-collision [{:keys [x y hitbox enemies] :as state}]
+  (assoc state :hit (if (seq (filter #(utils/collides?
+                                       (utils/make-circle x y hitbox)
+                                       (utils/make-circle (:x %) (:y %) (:hitbox %))) enemies))
+                      true
+                      false)))
