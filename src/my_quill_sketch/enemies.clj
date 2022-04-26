@@ -26,9 +26,6 @@
 (defn move-enemies [{:keys [enemies] :as state} speed]
   (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
 
-(def state {:enemies [(make-enemy 10 10) (make-enemy 150 150)]
-            :shots [(p/make-shot 10 10)]})
-
 (defn enemy-shot-collision [enemy shot]
   (when (utils/collides? (utils/make-circle (:x shot) (:y shot) (:hitbox shot))
                          (utils/make-circle (:x enemy) (:y enemy) (:hitbox enemy)))

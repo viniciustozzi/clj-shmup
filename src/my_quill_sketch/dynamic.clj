@@ -7,7 +7,6 @@
             [my-quill-sketch.draw :as d]))
 
 (def player-speed 3)
-(def player-cooldown 2000)  ;;in ms
 (def shot-cooldown 500)
 (def shot-speed 3)
 (def enemy-speed 1)
@@ -21,12 +20,10 @@
   {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
    :w 32 :h 32
    :hitbox 8
-   :cooldown false
+   :dead false
    :dirx 0 :diry 0
-   :life 3
    :shots []
    :last-shot-time 0
-   :last-hit-time 0
    :last-spawn-time 0
    :enemies []
    :input []})
@@ -93,7 +90,6 @@
   (q/fill 255)
   (q/stroke 255)
   (when (assets-loaded?)
-    (q/text (pr-str (:cooldown state)) 40 40)
     (d/draw-spaceship x y w h (:player @assets))
     (doseq [e enemies]
       (d/draw-element (:x e) (:y e) (:size e) (:enemy @assets)))
