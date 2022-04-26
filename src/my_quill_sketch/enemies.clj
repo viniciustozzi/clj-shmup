@@ -9,10 +9,19 @@
    :size 32
    :hitbox 32})
 
-(defn spawn-enemy-wave []
+(defn spawn-wave []
   (vec (map
         #(make-enemy (* 50 %) 10)
         (range 1 7))))
+
+(defn spawn-enemies [{:keys [last-spawn-time enemies] :as state}
+                     current-time
+                     default-spawn-time]
+  (if (< default-spawn-time (- current-time last-spawn-time))
+    (-> state
+        (assoc :enemies (into [] (concat enemies (spawn-wave))))
+        (assoc :last-spawn-time current-time))
+    state))
 
 (defn move-enemies [{:keys [enemies] :as state} speed]
   (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
