@@ -1,5 +1,6 @@
 (ns my-quill-sketch.player
-  (:require [my-quill-sketch.utils :as utils]))
+  (:require [my-quill-sketch.utils :as utils]
+            [quil.core :as q]))
 
 (defn make-shot [x y]
   {:x x
@@ -62,9 +63,14 @@
 (defn move-shots [{:keys [shots] :as state} speed]
   (assoc state :shots (map #(assoc % :y (- (:y %) speed)) shots)))
 
-(defn player-collision [{:keys [x y hitbox enemies] :as state}]
-  (assoc state :hit (if (seq (filter #(utils/collides?
-                                       (utils/make-circle x y hitbox)
-                                       (utils/make-circle (:x %) (:y %) (:hitbox %))) enemies))
-                      true
-                      false)))
+(defn player-collision [{:keys [x y hitbox enemies cooldown] :as state}
+                        current-time]
+  (-> state
+      (assoc :cooldown (if cooldown
+                         (if (seq (filter #(utils/collides?
+                                            (utils/make-circle x y hitbox)
+                                            (utils/make-circle (:x %) (:y %) (:hitbox %))) enemies))
+                           true
+                           false)
+                         state))
+      (assoc :last-hit-time current-time)))

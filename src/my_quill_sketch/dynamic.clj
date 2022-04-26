@@ -3,10 +3,12 @@
             [quil.applet :as qa]
             [my-quill-sketch.utils :as utils]
             [my-quill-sketch.player :as p]
-            [my-quill-sketch.enemies :as e]))
+            [my-quill-sketch.enemies :as e]
+            [my-quill-sketch.draw :as d]))
 
 (def player-speed 3)
-(def shot-cooldown 500) ;;in ms
+(def player-cooldown 2000)  ;;in ms
+(def shot-cooldown 500)
 (def shot-speed 3)
 (def enemy-speed 1)
 (def screen-width 350)
@@ -18,14 +20,13 @@
   {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
    :w 32 :h 32
    :hitbox 8
-   :hit false
+   :cooldown false
    :dirx 0 :diry 0
    :life 3
    :shots []
    :last-shot-time 0
-   :enemies (vec (map
-                  #(e/make-enemy (* 50 %) 10)
-                  (range 1 7)))
+   :last-hit-time 0
+   :enemies []
    :input []})
 
 (defn setup
@@ -75,7 +76,7 @@
       (proccess-inputs)
       (p/update-player-pos player-speed screen-width screen-height)
       (p/move-shots shot-speed)
-      (p/player-collision)
+      (p/player-collision (q/millis))
       (e/move-enemies enemy-speed)
       (e/check-collision-enemies->shot)))
 
@@ -84,17 +85,17 @@
 
 (defn on-draw
   "Receives global state of the game and draws it to the screen"
-  [state]
+  [{:keys [x y w h enemies shots] :as state}]
   (q/background 0)
   (q/fill 255)
   (q/stroke 255)
   (when (assets-loaded?)
-    (q/image (:player @assets) (:x state) (:y state) (:w state) (:w state))
-    (q/text (pr-str (:hit state)) 40 40)
-    (doseq [e (:enemies state)]
-      (q/image (:enemy @assets) (:x e) (:y e) (:size e) (:size e)))
-    (doseq [s (:shots state)]
-      (q/image (:shot @assets) (:x s) (:y s) (:size s) (:size s)))))
+    (q/text (pr-str (:cooldown state)) 40 40)
+    (d/draw-spaceship x y w h (:player @assets))
+    (doseq [e enemies]
+      (d/draw-element (:x e) (:y e) (:size e) (:enemy @assets)))
+    (doseq [s shots]
+      (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))))
 
 (comment
   (use 'my-quill-sketch.dynamic :reload)

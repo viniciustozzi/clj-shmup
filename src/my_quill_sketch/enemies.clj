@@ -9,6 +9,11 @@
    :size 32
    :hitbox 32})
 
+(defn spawn-enemy-wave []
+  (vec (map
+        #(make-enemy (* 50 %) 10)
+        (range 1 7))))
+
 (defn move-enemies [{:keys [enemies] :as state} speed]
   (assoc state :enemies (map #(assoc % :y (+ speed (:y %))) enemies)))
 
