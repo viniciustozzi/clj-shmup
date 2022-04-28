@@ -18,17 +18,18 @@
 (def assets (atom nil))
 
 (defn initial-state [scr-w scr-h]
-  (s/spawn-stars {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
-                  :w 32 :h 32
-                  :hitbox 8
-                  :dead false
-                  :dirx 0 :diry 0
-                  :shots []
-                  :last-shot-time 0
-                  :last-spawn-time 0
-                  :enemies []
-                  :stars []
-                  :input []} screen-width screen-height))
+  {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
+   :w 32 :h 32
+   :hitbox 8
+   :dead false
+   :dirx 0 :diry 0
+   :shots []
+   :last-shot-time 0
+   :last-spawn-time 0
+   :last-star-time 0
+   :enemies []
+   :stars (s/spawn-star-group scr-w scr-h)
+   :input []})
 
 (defn setup
   "Initial setup of the game, called once in the begining.
@@ -75,6 +76,7 @@
   [state]
   (-> state
       (proccess-inputs)
+      (s/spawn-stars (q/millis) screen-width screen-height)
       (s/move-stars)
       (p/update-player-pos player-speed screen-width screen-height)
       (p/move-shots shot-speed)

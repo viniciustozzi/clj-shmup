@@ -8,4 +8,4 @@
   (q/image img x y size size))
 
 (defn draw-star [x y]
-  (q/line x y x (+ y 15)))
+  (q/point x y))
