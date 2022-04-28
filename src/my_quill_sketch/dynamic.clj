@@ -4,7 +4,8 @@
             [my-quill-sketch.utils :as utils]
             [my-quill-sketch.player :as p]
             [my-quill-sketch.enemies :as e]
-            [my-quill-sketch.draw :as d]))
+            [my-quill-sketch.draw :as d]
+            [my-quill-sketch.stars :as s]))
 
 (def player-speed 3)
 (def shot-cooldown 500)
@@ -17,16 +18,17 @@
 (def assets (atom nil))
 
 (defn initial-state [scr-w scr-h]
-  {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
-   :w 32 :h 32
-   :hitbox 8
-   :dead false
-   :dirx 0 :diry 0
-   :shots []
-   :last-shot-time 0
-   :last-spawn-time 0
-   :enemies []
-   :input []})
+  (s/spawn-stars {:x (- (/ scr-w 2) 16) :y (- scr-h 50)
+                  :w 32 :h 32
+                  :hitbox 8
+                  :dead false
+                  :dirx 0 :diry 0
+                  :shots []
+                  :last-shot-time 0
+                  :last-spawn-time 0
+                  :enemies []
+                  :stars []
+                  :input []} screen-width screen-height))
 
 (defn setup
   "Initial setup of the game, called once in the begining.
@@ -73,9 +75,10 @@
   [state]
   (-> state
       (proccess-inputs)
+      (s/move-stars)
       (p/update-player-pos player-speed screen-width screen-height)
       (p/move-shots shot-speed)
-      (p/player-collision (q/millis))
+      (p/player-collision)
       (e/spawn-enemies (q/millis) enemy-spawn-time)
       (e/move-enemies enemy-speed)
       (e/check-collision-enemies->shot)))
@@ -85,16 +88,19 @@
 
 (defn on-draw
   "Receives global state of the game and draws it to the screen"
-  [{:keys [x y w h enemies shots] :as state}]
+  [{:keys [x y w h
+           enemies shots stars] :as state}]
   (q/background 0)
   (q/fill 255)
   (q/stroke 255)
   (when (assets-loaded?)
-    (d/draw-spaceship x y w h (:player @assets))
+    (doseq [s stars]
+      (d/draw-star (:x s) (:y s)))
     (doseq [e enemies]
       (d/draw-element (:x e) (:y e) (:size e) (:enemy @assets)))
     (doseq [s shots]
-      (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))))
+      (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))
+    (d/draw-spaceship x y w h (:player @assets))))
 
 (comment
   (use 'my-quill-sketch.dynamic :reload)
