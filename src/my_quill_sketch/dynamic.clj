@@ -68,10 +68,12 @@
   "Process every keyword in :input from 'state'
   and update 'state' accordingly"
   [state]
-  (-> state
-      (p/update-dir-x)
-      (p/update-dir-y)
-      (p/player-shot shot-cooldown (q/millis))))
+  (case (:level state)
+    "play" (-> state
+               (p/update-dir-x)
+               (p/update-dir-y)
+               (p/player-shot shot-cooldown (q/millis)))
+    "game-over" state))
 
 (defn on-update
   "Called every frame, receives global state as argument
