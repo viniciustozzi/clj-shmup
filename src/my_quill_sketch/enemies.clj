@@ -1,7 +1,7 @@
 (ns my-quill-sketch.enemies
-  (:require [my-quill-sketch.utils :as utils]
-            [my-quill-sketch.player :as p]
-            [clojure.set :refer [difference]]))
+  (:require
+   [clojure.set :refer [difference]]
+   [my-quill-sketch.utils :as utils]))
 
 (defn make-enemy [x y]
   {:x x
@@ -9,17 +9,17 @@
    :size 32
    :hitbox 32})
 
-(defn spawn-wave []
-  (vec (map
-        #(make-enemy (* 50 %) 10)
-        (range 1 7))))
+(defn spawn-wave [scr-w scr-h]
+  (mapv (fn [_] (make-enemy (rand scr-w) (- (rand scr-h) scr-h)))
+        (range 0 3)))
 
 (defn spawn-enemies [{:keys [last-spawn-time enemies] :as state}
-                     current-time
-                     default-spawn-time]
+                     current-time default-spawn-time
+                     scr-w scr-h]
   (if (< default-spawn-time (- current-time last-spawn-time))
     (-> state
-        (assoc :enemies (into [] (concat enemies (spawn-wave))))
+        (assoc :enemies (into [] (concat enemies
+                                         (spawn-wave scr-w scr-h))))
         (assoc :last-spawn-time current-time))
     state))
 

@@ -1,7 +1,8 @@
 (ns my-quill-sketch.core
-  (:require [quil.core :as q]
-            [quil.middleware :as m]
-            [my-quill-sketch.dynamic :as dyn]))
+  (:require
+   [my-quill-sketch.dynamic :as dyn]
+   [quil.core :as q]
+   [quil.middleware :as m]))
 
 (defn -main []
   (q/defsketch my-game

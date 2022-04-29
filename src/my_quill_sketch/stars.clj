@@ -9,7 +9,7 @@
   (map (fn [_] (make-star (rand scr-w)
                           (- 100 (rand (/ scr-h 2)))
                           (inc (rand 3))))
-       (range 1 10)))
+       (range 1 20)))
 
 (defn spawn-stars [{:keys [last-star-time stars] :as state}
                    current-time scr-w scr-h]

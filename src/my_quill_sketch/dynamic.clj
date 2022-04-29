@@ -1,16 +1,17 @@
 (ns my-quill-sketch.dynamic
-  (:require [quil.core :as q]
-            [quil.applet :as qa]
-            [my-quill-sketch.utils :as utils]
-            [my-quill-sketch.player :as p]
-            [my-quill-sketch.enemies :as e]
-            [my-quill-sketch.draw :as d]
-            [my-quill-sketch.stars :as s]))
+  (:require
+   [my-quill-sketch.draw :as d]
+   [my-quill-sketch.enemies :as e]
+   [my-quill-sketch.player :as p]
+   [my-quill-sketch.stars :as s]
+   [my-quill-sketch.utils :as utils]
+   [quil.applet :as qa]
+   [quil.core :as q]))
 
 (def player-speed 3)
 (def shot-cooldown 500)
 (def shot-speed 3)
-(def enemy-speed 1)
+(def enemy-speed 2)
 (def enemy-spawn-time 3000)
 (def screen-width 350)
 (def screen-height 500)
@@ -81,7 +82,7 @@
       (p/update-player-pos player-speed screen-width screen-height)
       (p/move-shots shot-speed)
       (p/player-collision)
-      (e/spawn-enemies (q/millis) enemy-spawn-time)
+      (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
       (e/move-enemies enemy-speed)
       (e/check-collision-enemies->shot)))
 
