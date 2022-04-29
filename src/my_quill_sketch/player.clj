@@ -68,3 +68,8 @@
                       (filter #(utils/collides?
                                 (utils/make-circle x y hitbox)
                                 (utils/make-circle (:x %) (:y %) (:hitbox %))) enemies))))
+
+(defn check-death [{:keys [level dead] :as state}]
+  (assoc state :level (if dead
+                        "game-over"
+                        level)))

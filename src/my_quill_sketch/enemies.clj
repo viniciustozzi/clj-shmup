@@ -10,7 +10,9 @@
    :hitbox 32})
 
 (defn spawn-wave [scr-w scr-h]
-  (mapv (fn [_] (make-enemy (rand scr-w) (- (rand scr-h) scr-h)))
+  (mapv (fn [_] (let [x (rand scr-w)
+                      y (- (rand scr-h) (- scr-h 32))]
+                  (make-enemy x y)))
         (range 0 3)))
 
 (defn spawn-enemies [{:keys [last-spawn-time enemies] :as state}
