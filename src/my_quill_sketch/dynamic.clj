@@ -73,7 +73,9 @@
                (p/update-dir-x)
                (p/update-dir-y)
                (p/player-shot shot-cooldown (q/millis)))
-    "game-over" state))
+    "game-over" (if (utils/btn-pressed? :x (:input state))
+                  (initial-state screen-width screen-height)
+                  state)))
 
 (defn on-update
   "Called every frame, receives global state as argument
