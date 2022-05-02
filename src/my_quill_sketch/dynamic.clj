@@ -29,6 +29,7 @@
    :last-shot-time 0
    :last-spawn-time 0
    :last-star-time 0
+   :last-enemies-shot-time 0
    :enemies []
    :enemies-shots []
    :stars (s/spawn-star-group scr-w scr-h)
@@ -91,7 +92,8 @@
       (p/check-death)
       (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
       (e/move-enemies enemy-speed)
-      (e/check-collision-enemies->shot)))
+      (e/check-collision-enemies->shot)
+      (e/spawn-shots (q/millis))))
 
 (defn settings []
   (q/smooth 0))
@@ -99,7 +101,11 @@
 (defn on-draw
   "Receives global state of the game and draws it to the screen"
   [{:keys [x y w h
-           enemies shots stars level] :as state}]
+           enemies
+           shots
+           stars
+           level
+           enemies-shots] :as state}]
   (q/background 0)
   (when (assets-loaded?)
     (case level
@@ -107,9 +113,13 @@
                    (d/draw-star (:x s) (:y s)))
                  (doseq [e enemies]
                    (d/draw-element (:x e) (:y e) (:size e) (:enemy @assets)))
+                 (doseq [es enemies-shots]
+                   (q/fill 255 0 0)
+                   (q/rect (:x es) (:y es) 16 16))
                  (doseq [s shots]
                    (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))
                  (d/draw-spaceship x y w h (:player @assets)))
+
       "game-over" (d/draw-game-over screen-width screen-height))))
 
 (comment
@@ -119,3 +129,4 @@
 
   (qa/with-applet my-quill-sketch.core/my-game (q/no-loop))
   (qa/with-applet my-quill-sketch.core/my-game (q/start-loop)))
+;; => nil

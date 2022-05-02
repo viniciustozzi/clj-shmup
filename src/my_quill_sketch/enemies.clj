@@ -9,6 +9,30 @@
    :size 32
    :hitbox 32})
 
+(defn make-enemy-shot [x y]
+  {:x x
+   :y y
+   :size 16
+   :hitbox 16})
+
+(defn spawn-shot-wave [enemies]
+  (let [n (rand (count enemies))]
+    (mapv (fn [_]
+            (make-enemy-shot (rand 400) (rand 400)))
+          (range n))))
+
+(defn spawn-shots [{:keys [last-enemies-shot-time
+                           enemies-shots
+                           enemies] :as state}
+                   current-time]
+  (if (< 4000 (- current-time last-enemies-shot-time))
+    (-> state
+        (assoc :enemies-shots (into []
+                                    (concat enemies-shots
+                                            (spawn-shot-wave enemies))))
+        (assoc :last-enemies-shot-time current-time))
+    state))
+
 (defn spawn-wave [scr-w scr-h]
   (mapv (fn [_] (let [x (rand scr-w)
                       y (- (rand scr-h) (- scr-h 32))]
