@@ -33,6 +33,11 @@
         (assoc :last-enemies-shot-time current-time))
     state))
 
+(defn move-enemy-shots [{:keys [enemies-shots] :as state} speed]
+  (assoc state :enemimes-shots
+         (map #(assoc % :y (inc (:y %)))
+              enemies-shots)))
+
 (defn spawn-wave [scr-w scr-h]
   (mapv (fn [_] (let [x (rand scr-w)
                       y (- (rand scr-h) (- scr-h 32))]
@@ -67,3 +72,6 @@
     (-> state
         (assoc :enemies (vec (difference (set enemies) (set collisions))))
         (assoc :shots (vec (difference (set shots) (set collisions)))))))
+
+(defn remove-enemies-out-of-screen [{:keys [enemies] :as state} scr-h]
+  (assoc state :enemies (remove #(> (:y %) scr-h) enemies)))

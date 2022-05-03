@@ -12,6 +12,7 @@
 (def shot-cooldown 500)
 (def shot-speed 3)
 (def enemy-speed 2)
+(def enemy-shot-speed 2)
 (def enemy-spawn-time 3000)
 (def screen-width 350)
 (def screen-height 500)
@@ -93,7 +94,9 @@
       (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
       (e/move-enemies enemy-speed)
       (e/check-collision-enemies->shot)
-      (e/spawn-shots (q/millis))))
+      (e/spawn-shots (q/millis))
+      (e/remove-enemies-out-of-screen screen-height)
+      (e/move-enemy-shots enemy-shot-speed)))
 
 (defn settings []
   (q/smooth 0))
