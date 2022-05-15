@@ -37,8 +37,3 @@
         dist (math/sqrt (+ (math/pow (- c2-x c1-x) 2.0)
                            (math/pow (- c2-y c1-y) 2.0)))]
     (< dist (+ r1 r2))))
-
-(def global-n (atom 0))
-
-(defn gen-id []
-  (swap! global-n inc))
