@@ -37,3 +37,15 @@
         dist (math/sqrt (+ (math/pow (- c2-x c1-x) 2.0)
                            (math/pow (- c2-y c1-y) 2.0)))]
     (< dist (+ r1 r2))))
+
+(defn magnitude
+  "Calculates the magnitude of a vector [x y]"
+  [[x y]]
+  (math/sqrt (+ (* x x)
+                (* y y))))
+
+(defn normalize
+  "Normalize a vector [x y]"
+  [[x y :as v]]
+  (let [m (magnitude v)]
+    [(/ x m) (/ y m)]))
