@@ -32,7 +32,7 @@
     (testing "Game should start with no inputs"
       (is (empty? (:input s))))
     (testing "Check initial enemies"
-      (is (= (count (:enemies s)) 6)))))
+      (is (= (count (:enemies s)) 0)))))
 
 (deftest update-enemies-position
   (testing "Increase y position of each enemy based on the enemy speed"

@@ -12,7 +12,7 @@
 (def shot-cooldown 500)
 (def shot-speed 3)
 (def enemy-speed 2)
-(def enemy-shot-speed 2)
+(def enemy-shot-speed 5)
 (def enemy-spawn-time 3000)
 (def screen-width 350)
 (def screen-height 500)
@@ -94,13 +94,12 @@
       (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
       (e/move-enemies enemy-speed)
       (e/check-collision-enemies->shot)
-      (e/spawn-shots (q/millis))
       (e/remove-enemies-out-of-screen screen-height)
+      (e/spawn-shots (q/millis))
       (e/move-enemy-shots enemy-shot-speed)))
 
 (defn settings []
   (q/smooth 0))
-
 (defn on-draw
   "Receives global state of the game and draws it to the screen"
   [{:keys [x y w h
@@ -117,8 +116,11 @@
                  (doseq [e enemies]
                    (d/draw-element (:x e) (:y e) (:size e) (:enemy @assets)))
                  (doseq [es enemies-shots]
-                   (q/fill 255 0 0)
-                   (q/rect (:x es) (:y es) 16 16))
+                   (let [x (:x es)
+                         y (:y es)]
+                     (when (not (and (nil? x) (nil? y)))
+                       (q/fill 255 0 0)
+                       (q/rect (:x es) (:y es) 16 16))))
                  (doseq [s shots]
                    (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))
                  (d/draw-spaceship x y w h (:player @assets)))
