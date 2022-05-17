@@ -49,3 +49,12 @@
   [[x y :as v]]
   (let [m (magnitude v)]
     [(/ x m) (/ y m)]))
+
+(defn vec-subtraction
+  "Subtraction of vectors (v1 - v2)"
+  [v1 v2]
+  (let [x1 (get v1 0)
+        x2 (get v2 0)
+        y1 (get v1 1)
+        y2 (get v2 1)]
+    [(- x1 x2) (- y1 y2)]))

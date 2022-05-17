@@ -1,7 +1,8 @@
 (ns my-quill-sketch.enemies
   (:require
    [clojure.set :refer [difference]]
-   [my-quill-sketch.utils :as utils]))
+   [my-quill-sketch.utils :as utils]
+   [my-quill-sketch.enemies :as e]))
 
 (defn make-enemy [x y]
   {:x x
@@ -9,30 +10,44 @@
    :size 32
    :hitbox 32})
 
-(defn make-enemy-shot [x y]
+(defn make-enemy-shot [x y target]
   {:x x
    :y y
    :size 16
-   :hitbox 16})
+   :hitbox 16
+   :target target})
 
-(defn spawn-shot [enemies]
+(defn spawn-shot [enemies player]
   (let [n (rand-int (count enemies))
         e (get (vec enemies) n)]
-    (make-enemy-shot (:x e) (:y e))))
+    (if (nil? e)
+      (make-enemy-shot -400 0 player)
+      (make-enemy-shot (:x e) (:y e) player))))
 
 (defn spawn-shots [{:keys [last-enemies-shot-time
                            enemies-shots
-                           enemies] :as state}
+                           enemies
+                           x y] :as state}
                    current-time]
   (if (< 1000 (- current-time last-enemies-shot-time))
     (-> state
-        (assoc :enemies-shots (conj enemies-shots (spawn-shot enemies)))
+        (assoc :enemies-shots (conj enemies-shots (spawn-shot enemies [x y])))
         (assoc :last-enemies-shot-time current-time))
     state))
 
+(defn- move-shot [s speed]
+  (let [t (:target s)
+        v (utils/vec-subtraction [(get t 0) (get t 1)] [(:x s) (:y s)])
+        dir (utils/normalize v)
+        new-x (+ (:x s) (* speed (get dir 0)))
+        new-y (+ (:y s) (* speed (get dir 1)))]
+    (-> s
+        (assoc :x new-x)
+        (assoc :y new-y))))
+
 (defn move-enemy-shots [{:keys [enemies-shots] :as state} speed]
   (assoc state :enemies-shots
-         (map #(assoc % :y (+ speed (:y %))) enemies-shots)))
+         (map #(move-shot % speed) enemies-shots)))
 
 (defn spawn-wave [scr-w scr-h]
   (mapv (fn [_] (let [x (rand scr-w)
