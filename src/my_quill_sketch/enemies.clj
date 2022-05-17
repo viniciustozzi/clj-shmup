@@ -15,7 +15,9 @@
    :y y
    :size 16
    :hitbox 16
-   :target target})
+   :dir (utils/normalize
+         (utils/vec-subtraction [(get target 0) (get target 1)]
+                                [x y]))})
 
 (defn spawn-shot [enemies player]
   (let [n (rand-int (count enemies))
@@ -36,11 +38,9 @@
     state))
 
 (defn- move-shot [s speed]
-  (let [t (:target s)
-        v (utils/vec-subtraction [(get t 0) (get t 1)] [(:x s) (:y s)])
-        dir (utils/normalize v)
-        new-x (+ (:x s) (* speed (get dir 0)))
-        new-y (+ (:y s) (* speed (get dir 1)))]
+  (let [d (:dir s)
+        new-x (+ (:x s) (* speed (get d 0)))
+        new-y (+ (:y s) (* speed (get d 1)))]
     (-> s
         (assoc :x new-x)
         (assoc :y new-y))))

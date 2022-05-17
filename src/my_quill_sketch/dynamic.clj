@@ -107,7 +107,7 @@
            shots
            stars
            level
-           enemies-shots] :as state}]
+           enemies-shots]}]
   (q/background 0)
   (when (assets-loaded?)
     (case level
