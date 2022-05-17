@@ -83,20 +83,22 @@
   "Called every frame, receives global state as argument
   Returns a new updated state at the end of the frame"
   [state]
-  (-> state
-      (proccess-inputs)
-      (s/spawn-stars (q/millis) screen-width screen-height)
-      (s/move-stars)
-      (p/update-player-pos player-speed screen-width screen-height)
-      (p/move-shots shot-speed)
-      (p/player-collision)
-      (p/check-death)
-      (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
-      (e/move-enemies enemy-speed)
-      (e/check-collision-enemies->shot)
-      (e/remove-enemies-out-of-screen screen-height)
-      (e/spawn-shots (q/millis))
-      (e/move-enemy-shots enemy-shot-speed)))
+  (case (:level state)
+    "play" (-> state
+               (proccess-inputs)
+               (s/spawn-stars (q/millis) screen-width screen-height)
+               (s/move-stars)
+               (p/update-player-pos player-speed screen-width screen-height)
+               (p/move-shots shot-speed)
+               (p/player-collision)
+               (p/check-death)
+               (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
+               (e/move-enemies enemy-speed)
+               (e/check-collision-enemies->shot)
+               (e/remove-enemies-out-of-screen screen-height)
+               (e/spawn-shots (q/millis))
+               (e/move-enemy-shots enemy-shot-speed))
+    "game-over" (proccess-inputs state)))
 
 (defn settings []
   (q/smooth 0))
