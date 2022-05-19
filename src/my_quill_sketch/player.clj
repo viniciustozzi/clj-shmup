@@ -1,6 +1,6 @@
 (ns my-quill-sketch.player
-  (:require [my-quill-sketch.utils :as utils]
-            [quil.core :as q]))
+  (:require
+   [my-quill-sketch.utils :as utils]))
 
 (defn make-shot [x y]
   {:x x

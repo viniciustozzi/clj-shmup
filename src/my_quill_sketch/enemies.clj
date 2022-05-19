@@ -86,3 +86,11 @@
 
 (defn remove-enemies-out-of-screen [{:keys [enemies] :as state} scr-h]
   (assoc state :enemies (remove #(> (:y %) scr-h) enemies)))
+
+(defn clean-shots [{:keys [enemies-shots] :as state} scr-w scr-h]
+  (assoc state :enemies-shots (filterv
+                               (fn [s]
+                                 (let [x (:x s) y (:y s)]
+                                   (and (< 0 x scr-w)
+                                        (< 0 y scr-h))))
+                               enemies-shots)))

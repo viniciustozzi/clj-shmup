@@ -23,3 +23,12 @@
   (assoc state :stars (mapv (fn [s] {:x (:x s)
                                      :y (inc (:y s))})
                             stars)))
+
+(defn clean-stars [{:keys [stars] :as state} screen-height]
+  (assoc state :stars (filterv #(< (:y %) screen-height) stars)))
+
+(defn update-stars [state scr-w scr-h current-time]
+  (-> state
+      (spawn-stars current-time scr-w scr-h)
+      (move-stars)
+      (clean-stars scr-h)))

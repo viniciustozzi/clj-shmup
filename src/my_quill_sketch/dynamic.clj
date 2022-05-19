@@ -86,8 +86,7 @@
   (case (:level state)
     "play" (-> state
                (proccess-inputs)
-               (s/spawn-stars (q/millis) screen-width screen-height)
-               (s/move-stars)
+               (s/update-stars screen-width screen-height (q/millis))
                (p/update-player-pos player-speed screen-width screen-height)
                (p/move-shots shot-speed)
                (p/player-collision)
@@ -96,6 +95,7 @@
                (e/move-enemies enemy-speed)
                (e/check-collision-enemies->shot)
                (e/remove-enemies-out-of-screen screen-height)
+               (e/clean-shots screen-width screen-height)
                (e/spawn-shots (q/millis))
                (e/move-enemy-shots enemy-shot-speed))
     "game-over" (proccess-inputs state)))
