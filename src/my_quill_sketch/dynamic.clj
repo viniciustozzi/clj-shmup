@@ -104,7 +104,8 @@
            shots
            stars
            level
-           enemies-shots] :as state}]
+           score
+           enemies-shots]}]
   (q/background 0)
   (when (assets-loaded?)
     (case level
@@ -120,9 +121,8 @@
                  (doseq [s shots]
                    (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))
                  (d/draw-spaceship x y w h (:player @assets))
-                 (q/text (pr-str (:score state)) 100 100))
-
-      "game-over" (d/draw-game-over screen-width screen-height))))
+                 (d/draw-game-score score))
+      "game-over" (d/draw-game-over screen-width screen-height score))))
 
 (comment
   (use 'my-quill-sketch.dynamic :reload)

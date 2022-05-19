@@ -11,6 +11,12 @@
   (q/stroke 255)
   (q/point x y))
 
-(defn draw-game-over [scr-w scr-h]
+(defn draw-game-over [scr-w scr-h score]
   (q/fill 255 0 0)
-  (q/text "YOU DIED" (- (/ scr-w 2) 50) (/ scr-h 2)))
+  (q/text "YOU DIED" (- (/ scr-w 2) 50) (- (/ scr-h 2) 40))
+  (q/fill 255 255 255)
+  (q/text (str "Your score is: " score) (- (/ scr-w 2) 75) (/ scr-h 2)))
+
+(defn draw-game-score [score]
+  (q/fill 255 255 255)
+  (q/text (str "SCORE: " score) 10 30))

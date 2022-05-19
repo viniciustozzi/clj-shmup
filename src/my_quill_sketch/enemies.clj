@@ -53,7 +53,7 @@
   (mapv (fn [_] (let [x (rand (- scr-w 40))
                       y (- (rand scr-h) (- scr-h 32))]
                   (make-enemy x y)))
-        (range 0 3)))
+        (range 0 5)))
 
 (defn spawn-enemies [{:keys [last-spawn-time enemies] :as state}
                      current-time default-spawn-time
