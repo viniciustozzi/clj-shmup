@@ -94,3 +94,15 @@
                                    (and (< 0 x scr-w)
                                         (< 0 y scr-h))))
                                enemies-shots)))
+
+(defn update-enemies [state scr-w scr-h
+                      current-time enemy-spawn-time
+                      enemy-shot-speed enemy-speed]
+  (-> state
+      (spawn-enemies current-time enemy-spawn-time scr-w scr-h)
+      (move-enemies enemy-speed)
+      (check-collision-enemies->shot)
+      (remove-enemies-out-of-screen scr-h)
+      (clean-shots scr-w scr-h)
+      (spawn-shots current-time)
+      (move-enemy-shots enemy-shot-speed)))

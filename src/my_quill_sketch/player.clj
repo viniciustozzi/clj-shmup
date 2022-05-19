@@ -1,6 +1,5 @@
 (ns my-quill-sketch.player
-  (:require
-   [my-quill-sketch.utils :as utils]))
+  (:require [my-quill-sketch.utils :as utils]))
 
 (defn make-shot [x y]
   {:x x
@@ -79,3 +78,12 @@
   (assoc state :level (if dead
                         "game-over"
                         level)))
+
+(defn update-player [state player-speed
+                     shot-speed current-time
+                     scr-w scr-h]
+  (-> state
+      (update-player-pos player-speed scr-w scr-h)
+      (move-shots shot-speed)
+      (player-collision)
+      (check-death)))

@@ -10,10 +10,10 @@
 
 (def player-speed 3)
 (def shot-cooldown 500)
-(def shot-speed 3)
+(def shot-speed 5)
 (def enemy-speed 2)
 (def enemy-shot-speed 5)
-(def enemy-spawn-time 3000)
+(def enemy-spawn-time 2500)
 (def screen-width 350)
 (def screen-height 500)
 
@@ -87,17 +87,9 @@
     "play" (-> state
                (proccess-inputs)
                (s/update-stars screen-width screen-height (q/millis))
-               (p/update-player-pos player-speed screen-width screen-height)
-               (p/move-shots shot-speed)
-               (p/player-collision)
-               (p/check-death)
-               (e/spawn-enemies (q/millis) enemy-spawn-time screen-width screen-height)
-               (e/move-enemies enemy-speed)
-               (e/check-collision-enemies->shot)
-               (e/remove-enemies-out-of-screen screen-height)
-               (e/clean-shots screen-width screen-height)
-               (e/spawn-shots (q/millis))
-               (e/move-enemy-shots enemy-shot-speed))
+               (p/update-player player-speed shot-speed (q/millis) screen-width screen-height)
+               (e/update-enemies screen-width screen-height (q/millis)
+                                 enemy-spawn-time enemy-shot-speed enemy-speed))
     "game-over" (proccess-inputs state)))
 
 (defn settings []
