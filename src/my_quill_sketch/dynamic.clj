@@ -34,6 +34,7 @@
    :enemies []
    :enemies-shots []
    :stars (s/spawn-initial-stars screen-width screen-height)
+   :score 0
    :input []})
 
 (defn setup
@@ -103,7 +104,7 @@
            shots
            stars
            level
-           enemies-shots]}]
+           enemies-shots] :as state}]
   (q/background 0)
   (when (assets-loaded?)
     (case level
@@ -118,7 +119,8 @@
                        (d/draw-element (:x es) (:y es) 16 (:enemy-shot @assets)))))
                  (doseq [s shots]
                    (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))
-                 (d/draw-spaceship x y w h (:player @assets)))
+                 (d/draw-spaceship x y w h (:player @assets))
+                 (q/text (pr-str (:score state)) 100 100))
 
       "game-over" (d/draw-game-over screen-width screen-height))))
 

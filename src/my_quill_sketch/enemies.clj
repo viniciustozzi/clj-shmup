@@ -31,7 +31,7 @@
                            enemies
                            x y] :as state}
                    current-time]
-  (if (< 1000 (- current-time last-enemies-shot-time))
+  (if (< 500 (- current-time last-enemies-shot-time))
     (-> state
         (assoc :enemies-shots (conj enemies-shots (spawn-shot enemies [x y])))
         (assoc :last-enemies-shot-time current-time))
@@ -80,9 +80,14 @@
 
 (defn check-collision-enemies->shot [{:keys [enemies shots] :as state}]
   (let [collisions (enemies-shots-collision enemies shots)]
-    (-> state
-        (assoc :enemies (vec (difference (set enemies) (set collisions))))
-        (assoc :shots (vec (difference (set shots) (set collisions)))))))
+    (let [new-enemies (vec (difference (set enemies) (set collisions)))
+          new-score (- (count enemies) (count new-enemies))]
+      (-> state
+          (assoc :score (if (< 0 new-score)
+                          (inc (:score state))
+                          (:score state)))
+          (assoc :enemies new-enemies)
+          (assoc :shots (vec (difference (set shots) (set collisions))))))))
 
 (defn remove-enemies-out-of-screen [{:keys [enemies] :as state} scr-h]
   (assoc state :enemies (remove #(> (:y %) scr-h) enemies)))
