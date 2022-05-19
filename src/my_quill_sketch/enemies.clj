@@ -50,7 +50,7 @@
          (map #(move-shot % speed) enemies-shots)))
 
 (defn spawn-wave [scr-w scr-h]
-  (mapv (fn [_] (let [x (rand scr-w)
+  (mapv (fn [_] (let [x (rand (- scr-w 40))
                       y (- (rand scr-h) (- scr-h 32))]
                   (make-enemy x y)))
         (range 0 3)))

@@ -5,6 +5,12 @@
    :y y
    :speed speed})
 
+(defn spawn-initial-stars [scr-w scr-h]
+  (map (fn [_] (make-star (rand scr-w)
+                          (rand scr-h)
+                          (inc (rand 3))))
+       (range 1 50)))
+
 (defn spawn-star-group [scr-w scr-h]
   (map (fn [_] (make-star (rand scr-w)
                           (- 100 (rand (/ scr-h 2)))

@@ -33,7 +33,7 @@
    :last-enemies-shot-time 0
    :enemies []
    :enemies-shots []
-   :stars (s/spawn-star-group scr-w scr-h)
+   :stars (s/spawn-initial-stars screen-width screen-height)
    :input []})
 
 (defn setup
@@ -43,14 +43,16 @@
   (q/text-font (q/create-font "Arial" 24 true))
   (reset! assets {:player (q/load-image "ship.png")
                   :enemy (q/load-image "enemy.png")
-                  :shot (q/load-image "shot.png")})
+                  :shot (q/load-image "shot.png")
+                  :enemy-shot (q/load-image "enemy_shot.png")})
   (initial-state screen-width screen-height))
 
 (defn assets-loaded? []
   (and
    (q/loaded? (:player @assets))
    (q/loaded? (:enemy @assets))
-   (q/loaded? (:shot @assets))))
+   (q/loaded? (:shot @assets))
+   (q/loaded? (:enemy-shot @assets))))
 
 (defn on-key-pressed
   "Called when any key is pressed.
@@ -113,8 +115,7 @@
                    (let [x (:x es)
                          y (:y es)]
                      (when (not (and (nil? x) (nil? y)))
-                       (q/fill 255 0 0)
-                       (q/rect (:x es) (:y es) 16 16))))
+                       (d/draw-element (:x es) (:y es) 16 (:enemy-shot @assets)))))
                  (doseq [s shots]
                    (d/draw-element (:x s) (:y s) (:size s)  (:shot @assets)))
                  (d/draw-spaceship x y w h (:player @assets)))
