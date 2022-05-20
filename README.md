@@ -1,18 +1,16 @@
-# my-quill-sketch
+# Clj Shmup
 
-A Quil sketch designed to ... well, that part is up to you.
+A very simple game created with the purpose of learning [Clojure](https://clojure.org/) and [Quil](http://www.quil.info/).
 
-## Usage
+![](https://github.com/viniciustozzi/clj-shmup/blob/main/demo.gif)
 
-LightTable - open `core.clj` and press `Ctrl+Shift+Enter` to evaluate the file.
+## How To Play
 
-Emacs - run cider, open `core.clj` and press `C-c C-k` to evaluate the file.
+- *Arrow keys* to move the spaceship
+- Press *x* to shoot 
 
-REPL - run `(require 'my-quill-sketch.core)`.
+## Know Issues / Missing Features
 
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+- No Audio/Music
+- No Main menu, action since the begining
+- Sometimes enemies overlap in the same position when they spawn
