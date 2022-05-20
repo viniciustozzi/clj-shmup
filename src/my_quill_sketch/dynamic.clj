@@ -90,7 +90,7 @@
     "play" (-> state
                (proccess-inputs)
                (s/update-stars screen-width screen-height (q/millis))
-               (p/update-player player-speed shot-speed (q/millis) screen-width screen-height)
+               (p/update-player player-speed shot-speed  screen-width screen-height)
                (e/update-enemies screen-width screen-height (q/millis)
                                  enemy-spawn-time enemy-shot-speed enemy-speed))
     "game-over" (proccess-inputs state)))

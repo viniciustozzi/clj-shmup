@@ -62,6 +62,9 @@
 (defn move-shots [{:keys [shots] :as state} speed]
   (assoc state :shots (map #(assoc % :y (- (:y %) speed)) shots)))
 
+(defn clean-shots [{:keys [shots] :as state}]
+  (assoc state :shots (filterv #(< 0 (:y %)) shots)))
+
 (defn player-collision [{:keys [x y
                                 hitbox
                                 enemies
@@ -80,10 +83,10 @@
                         level)))
 
 (defn update-player [state player-speed
-                     shot-speed current-time
-                     scr-w scr-h]
+                     shot-speed scr-w scr-h]
   (-> state
       (update-player-pos player-speed scr-w scr-h)
+      (clean-shots)
       (move-shots shot-speed)
       (player-collision)
       (check-death)))
