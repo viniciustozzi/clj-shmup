@@ -2,7 +2,8 @@
   (:require
    [my-quill-sketch.dynamic :as dyn]
    [quil.core :as q]
-   [quil.middleware :as m]))
+   [quil.middleware :as m])
+  (:gen-class))
 
 (defn -main []
   (q/defsketch my-game
@@ -14,7 +15,5 @@
     :settings dyn/settings
     :key-pressed dyn/on-key-pressed
     :key-released dyn/on-key-released
-    :features [:keep-on-top :resizable]
+    :features [:keep-on-top :exit-on-close]
     :middleware [m/fun-mode]))
-
-(-main)

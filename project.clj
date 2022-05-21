@@ -5,4 +5,6 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [com.lambdaisland/cljbox2d "0.6.31"]
-                 [quil "4.0.0-SNAPSHOT-1"]])
+                 [quil "4.0.0-SNAPSHOT-1"]]
+  :aot [my-quill-sketch.core]
+  :main my-quill-sketch.core)
