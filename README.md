@@ -6,7 +6,7 @@ A very simple game created with the purpose of learning [Clojure](https://clojur
 
 ## Download
 
-![Download Link](https://github.com/viniciustozzi/clj-shmup/blob/main/my-quill-sketch-0.1.0-SNAPSHOT-standalone.jar)
+![Download Link](https://github.com/viniciustozzi/clj-shmup/raw/main/my-quill-sketch-0.1.0-SNAPSHOT-standalone.jar)
 
 Just double clicking this file should run the game, but if not then you need to run on a terminal:
 
