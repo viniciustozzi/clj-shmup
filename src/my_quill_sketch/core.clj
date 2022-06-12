@@ -17,3 +17,5 @@
     :key-released dyn/on-key-released
     :features [:keep-on-top :exit-on-close]
     :middleware [m/fun-mode]))
+
+(-main)

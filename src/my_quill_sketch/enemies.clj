@@ -8,7 +8,7 @@
   {:x x
    :y y
    :size 32
-   :hitbox 32})
+   :hitbox 12})
 
 (defn make-enemy-shot [x y target]
   {:x x
